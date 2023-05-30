@@ -152,34 +152,45 @@
 
         // Función para actualizar una receta
         function actualizarReceta(id) {
-          const nombre = document.querySelector('#nombre').value;
-          const tipo_pan = document.querySelector('#tipo_pan').value;
-          const ingredientes = document.querySelector('#ingredientes').value;
-          const instrucciones = document.querySelector('#instrucciones').value;
-          const tiempo_preparacion = document.querySelector('#tiempo_preparacion').value;
-          const dificultad = document.querySelector('#dificultad').value;
+            const nombre = document.querySelector('#nombre').value;
+            const tipo_pan = document.querySelector('#tipo_pan').value;
+            const ingredientes = document.querySelector('#ingredientes').value;
+            const instrucciones = document.querySelector('#instrucciones').value;
+            const tiempo_preparacion = document.querySelector('#tiempo_preparacion').value;
+            const dificultad = document.querySelector('#dificultad').value;
 
-          fetch(`api.php?id=${id}`, {
-            method: 'PUT',
-            body: JSON.stringify({ nombre, tipo_pan, ingredientes, instrucciones, tiempo_preparacion, dificultad }),
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          })
-            .then(response => {
-              if (response.ok) {
-                createForm.reset();
-                const submitButton = document.querySelector('#create-form button');
-                submitButton.innerText = 'Crear';
-                submitButton.onclick = crearReceta;
-                cargarRecetas();
-              } else {
-                throw new Error('Error al actualizar la receta.');
-              }
+            fetch(`api.php?id=${id}`, {
+                method: 'PUT',
+                body: JSON.stringify({ nombre, tipo_pan, ingredientes, instrucciones, tiempo_preparacion, dificultad }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             })
-            .catch(error => {
-              console.error('Error al actualizar la receta:', error);
-            });
+                .then(() => {
+                    createForm.reset();
+
+                    // Encontrar la fila existente por su ID
+                    const existingRow = document.querySelector(`#receta-${id}`);
+
+                    if (existingRow) {
+                        // Actualizar los valores de la fila existente
+                        existingRow.innerHTML = `
+                            <td>${id}</td>
+                            <td>${nombre}</td>
+                            <td>${tipo_pan}</td>
+                            <td>${ingredientes}</td>
+                            <td>${instrucciones}</td>
+                            <td>${tiempo_preparacion}</td>
+                            <td>${dificultad}</td>
+                            <td>
+                                <button onclick="editarReceta(${id})">Editar</button>
+                                <button onclick="eliminarReceta(${id})">Eliminar</button>
+                            </td>
+                        `;
+                    }
+
+                    cargarRecetas();
+                });
         }
 
         // Cargar recetas al cargar la página
