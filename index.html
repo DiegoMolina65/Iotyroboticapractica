@@ -169,24 +169,32 @@
             const tiempo_preparacion = document.querySelector('#tiempo_preparacion').value;
             const dificultad = document.querySelector('#dificultad').value;
 
-            fetch(`api.php?id=${id}`, {
-                method: 'PUT',
-                body: JSON.stringify({ nombre, tipo_pan, ingredientes, instrucciones, tiempo_preparacion, dificultad }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(() => {
-                    createForm.reset();
+        // Desactivar el botón de Actualizar
+        const submitButton = document.querySelector('#create-form button');
+        submitButton.disabled = true;
 
-                    // Restaurar el botón del formulario para que llame a la función de creación
-                    const submitButton = document.querySelector('#create-form button');
-                    submitButton.innerText = 'Crear';
-                    submitButton.onclick = crearReceta;
+        fetch(`api.php?id=${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({ nombre, tipo_pan, ingredientes, instrucciones, tiempo_preparacion, dificultad }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+    })
+        .then(() => {
+            createForm.reset();
 
-                    cargarRecetas();
-                });
-        }
+            // Restaurar el botón del formulario para que llame a la función de creación
+            submitButton.innerText = 'Crear';
+            submitButton.onclick = crearReceta;
+
+            cargarRecetas();
+
+            // Reactivar el botón de Actualizar después de un breve retraso
+            setTimeout(() => {
+                submitButton.disabled = false;
+            }, 500);
+        });
+    }   
 
         // Cargar recetas al cargar la página
         cargarRecetas();
