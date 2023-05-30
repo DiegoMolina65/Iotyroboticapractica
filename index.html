@@ -169,25 +169,10 @@
                 .then(() => {
                     createForm.reset();
 
-                    // Encontrar la fila existente por su ID
-                    const existingRow = document.querySelector(`#receta-${id}`);
-
-                    if (existingRow) {
-                        // Actualizar los valores de la fila existente
-                        existingRow.innerHTML = `
-                            <td>${id}</td>
-                            <td>${nombre}</td>
-                            <td>${tipo_pan}</td>
-                            <td>${ingredientes}</td>
-                            <td>${instrucciones}</td>
-                            <td>${tiempo_preparacion}</td>
-                            <td>${dificultad}</td>
-                            <td>
-                                <button onclick="editarReceta(${id})">Editar</button>
-                                <button onclick="eliminarReceta(${id})">Eliminar</button>
-                            </td>
-                        `;
-                    }
+                    // Restaurar el botón del formulario para que llame a la función de creación
+                    const submitButton = document.querySelector('#create-form button');
+                    submitButton.innerText = 'Crear';
+                    submitButton.onclick = crearReceta;
 
                     cargarRecetas();
                 });
