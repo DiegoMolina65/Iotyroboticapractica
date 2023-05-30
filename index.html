@@ -52,10 +52,17 @@
         <tbody></tbody>
     </table>
 
+    <button onclick="mostrarDatos()">Mostrar Datos</button>
+
     <script>
         // Obtener referencia a la tabla y el formulario
         const tableBody = document.querySelector('#recetas-table tbody');
         const createForm = document.querySelector('#create-form');
+
+        // Función para redirigir a la página de mostrar datos
+        function mostrarDatos() {
+            window.location.href = 'mostrar-datos.html';
+        }
 
         // Función para cargar las recetas desde la API
         function cargarRecetas() {
