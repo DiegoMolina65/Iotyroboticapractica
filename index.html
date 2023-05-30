@@ -110,18 +110,28 @@
             const tiempo_preparacion = document.querySelector('#tiempo_preparacion').value;
             const dificultad = document.querySelector('#dificultad').value;
 
+            // Desactivar el botón de Crear
+            const submitButton = document.querySelector('#create-form button');
+            submitButton.disabled = true;
+
             fetch('api.php', {
                 method: 'POST',
                 body: JSON.stringify({ nombre, tipo_pan, ingredientes, instrucciones, tiempo_preparacion, dificultad }),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-                .then(() => {
-                    createForm.reset();
-                    cargarRecetas();
-                });
-        }
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(() => {
+            createForm.reset();
+            cargarRecetas();
+            
+            // Reactivar el botón de Crear después de un breve retraso
+            setTimeout(() => {
+                submitButton.disabled = false;
+            }, 500);
+        });
+    }
+
 
         // Función para eliminar una receta
         function eliminarReceta(id) {
