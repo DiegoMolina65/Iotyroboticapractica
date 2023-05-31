@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cliente MQTT</title>
+</head>
+<body>
+    <h1>Cliente MQTT</h1>
+
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script>
+        // URL y puerto del servidor Mosquitto MQTT
+        const brokerUrl = 'mqtt://104.154.170.98:1883';
+        
+        // Credenciales de autenticación
+        const options = {
+            username: 'diegomolina',
+            password: 'diegomolina'
+        };
+
+        // Cliente MQTT con las opciones de autenticación
+        const client = mqtt.connect(brokerUrl, options);
+
+        // Evento que se ejecuta cuando se establece la conexión con el servidor MQTT
+        client.on('connect', function () {
+            console.log('Conectado al servidor MQTT');
+            // Suscribirse a un tema
+            client.subscribe('mi/tema');
+            console.log('Suscrito al tema "mi/tema"');
+        });
+
+        // Evento que se ejecuta cuando se recibe un mensaje en el tema suscrito
+        client.on('message', function (topic, message) {
+            console.log('Mensaje recibido:');
+            console.log('Tema:', topic);
+            console.log('Contenido:', message.toString());
+        });
+    </script>
+</body>
+</html>
