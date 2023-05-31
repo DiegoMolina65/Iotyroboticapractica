@@ -1,38 +1,54 @@
 <!DOCTYPE html>
 <html>
+<meta charset="UTF-8">
 <head>
-    <title>Cliente MQTT</title>
+    <title>Conexión a Mosquitto</title>
 </head>
 <body>
-    <h1>Cliente MQTT</h1>
+    <h1>Conexión a Mosquitto</h1>
 
-    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.min.js"></script>
     <script>
-        // URL y puerto del servidor Mosquitto MQTT
-        const brokerUrl = 'mqtt://104.154.170.98:1883';
-        
-        // Credenciales de autenticación
-        const options = {
-            username: 'diegomolina',
-            password: 'diegomolina'
+        // Configuración de conexión MQTT
+        const brokerHost = "104.154.170.98";
+        const brokerPort = 9001; // Puerto predeterminado para MQTT sin encriptación
+        const clientId = "mqtt-client-" + Math.random().toString(16).substr(2, 8); // Identificador de cliente único
+
+        const username = "diegomolina";
+        const password = "diegomolina";
+
+        const mqttClient = new Paho.MQTT.Client(brokerHost, brokerPort, clientId);
+
+        // Configurar las credenciales de autenticación
+        mqttClient.username = username;
+        mqttClient.password = password;
+
+        // Función de conexión exitosa
+        const onConnect = () => {
+            console.log("Conexión exitosa a Mosquitto");
+
+            // Suscribirse a un tema después de la conexión exitosa
+            mqttClient.subscribe("topic/example");
         };
 
-        // Cliente MQTT con las opciones de autenticación
-        const client = mqtt.connect(brokerUrl, options);
+        // Función de pérdida de conexión
+        const onConnectionLost = response => {
+            console.log("Conexión perdida a Mosquitto: " + response.errorMessage);
+        };
 
-        // Evento que se ejecuta cuando se establece la conexión con el servidor MQTT
-        client.on('connect', function () {
-            console.log('Conectado al servidor MQTT');
-            // Suscribirse a un tema
-            client.subscribe('mi/tema');
-            console.log('Suscrito al tema "mi/tema"');
-        });
+        // Función de recepción de mensaje
+        const onMessageArrived = message => {
+            console.log("Mensaje recibido: " + message.payloadString);
+        };
 
-        // Evento que se ejecuta cuando se recibe un mensaje en el tema suscrito
-        client.on('message', function (topic, message) {
-            console.log('Mensaje recibido:');
-            console.log('Tema:', topic);
-            console.log('Contenido:', message.toString());
+        // Configurar los controladores de eventos
+        mqttClient.onConnectionLost = onConnectionLost;
+        mqttClient.onMessageArrived = onMessageArrived;
+
+        // Conectar al broker MQTT
+        mqttClient.connect({
+            onSuccess: onConnect,
+            useSSL: false // Cambiar a true si el servidor MQTT utiliza SSL/TLS
         });
     </script>
 </body>
