@@ -1,5 +1,4 @@
 import paho.mqtt.client as mqtt
-import time
 
 # Configuración del cliente MQTT
 broker_host = "104.154.170.98"
@@ -27,11 +26,4 @@ client.on_message = on_message
 client.connect(broker_host, broker_port, 60)
 
 # Bucle principal para mantener la conexión y procesar los mensajes
-client.loop_start()
-
-# Esperar a que la conexión se establezca
-time.sleep(1)
-
-# Detener el bucle principal y desconectarse del broker MQTT
-client.loop_stop()
-client.disconnect()
+client.loop_forever()
