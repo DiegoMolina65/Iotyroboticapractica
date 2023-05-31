@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<head>
+    <title>Control del LED</title>
+    <style>
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Control del LED</h1>
+
+    <button id="encender-btn" class="button">Encender LED</button>
+    <button id="apagar-btn" class="button">Apagar LED</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#encender-btn").click(function () {
+                $.get("topicoled.py?action=encender", function (data) {
+                    console.log(data);
+                });
+            });
+
+            $("#apagar-btn").click(function () {
+                $.get("topicoled.py?action=apagar", function (data) {
+                    console.log(data);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
