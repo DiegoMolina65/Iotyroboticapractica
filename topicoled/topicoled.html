@@ -12,31 +12,17 @@
 
     <script>
         function encenderLed() {
-            enviarEstado('encendido');
+            fetch('/encender_led', { method: 'POST' })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error(error));
         }
 
         function apagarLed() {
-            enviarEstado('apagado');
-        }
-
-        function enviarEstado(estado) {
-            fetch('http://localhost:5000/led', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ estado: estado })
-            })
-            .then(response => {
-                if (response.ok) {
-                    console.log('Estado enviado: ' + estado);
-                } else {
-                    console.error('Error al enviar el estado');
-                }
-            })
-            .catch(error => {
-                console.error('Error en la solicitud:', error);
-            });
+            fetch('/apagar_led', { method: 'POST' })
+                .then(response => response.text())
+                .then(data => console.log(data))
+                .catch(error => console.error(error));
         }
     </script>
 </body>
