@@ -29,17 +29,8 @@ client.connect(broker_host, broker_port, 60)
 # Bucle principal para mantener la conexión y procesar los mensajes
 client.loop_start()
 
-# Publicar un mensaje en el tópico del LED
-client.publish("led_topic", "Encender LED")
-
-# Esperar 5 segundos antes de publicar otro mensaje
-time.sleep(5)
-
-# Publicar otro mensaje en el tópico del LED
-client.publish("led_topic", "Apagar LED")
-
-# Esperar 5 segundos antes de finalizar el programa
-time.sleep(5)
+# Esperar a que la conexión se establezca
+time.sleep(1)
 
 # Detener el bucle principal y desconectarse del broker MQTT
 client.loop_stop()

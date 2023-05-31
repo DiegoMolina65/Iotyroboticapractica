@@ -1,38 +1,63 @@
 <!DOCTYPE html>
 <html>
-<meta charset="UTF-8">
 <head>
-    <title>Control del LED</title>
-    <style>
-        .button {
-            display: inline-block;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>Control de LED</title>
 </head>
 <body>
-    <h1>Control del LED</h1>
+    <h1>Control de LED</h1>
 
-    <button id="encender-btn" class="button">Encender LED</button>
-    <button id="apagar-btn" class="button">Apagar LED</button>
+    <button onclick="encenderLed()">Encender LED</button>
+    <button onclick="apagarLed()">Apagar LED</button>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script>
-        $(document).ready(function () {
-            $("#encender-btn").click(function () {
-                $.get("topicoled.py?action=encender", function (data) {
-                    console.log(data);
-                });
-            });
+        function encenderLed() {
+            // Crear instancia del cliente MQTT
+            var client = new Paho.MQTT.Client("104.154.170.98", 1883, "clientId");
 
-            $("#apagar-btn").click(function () {
-                $.get("topicoled.py?action=apagar", function (data) {
-                    console.log(data);
-                });
+            // Configurar las credenciales de autenticación
+            client.username = "diegomolina";
+            client.password = "diegomolina";
+
+            // Conectar al broker MQTT
+            client.connect({
+                onSuccess: function() {
+                    console.log("Conectado al broker MQTT");
+
+                    // Publicar mensaje para encender el LED
+                    var message = new Paho.MQTT.Message("Encender LED");
+                    message.destinationName = "led_topic";
+                    client.send(message);
+
+                    // Desconectar del broker MQTT
+                    client.disconnect();
+                }
             });
-        });
+        }
+
+        function apagarLed() {
+            // Crear instancia del cliente MQTT
+            var client = new Paho.MQTT.Client("104.154.170.98", 1883, "clientId");
+
+            // Configurar las credenciales de autenticación
+            client.username = "diegomolina";
+            client.password = "diegomolina";
+
+            // Conectar al broker MQTT
+            client.connect({
+                onSuccess: function() {
+                    console.log("Conectado al broker MQTT");
+
+                    // Publicar mensaje para apagar el LED
+                    var message = new Paho.MQTT.Message("Apagar LED");
+                    message.destinationName = "led_topic";
+                    client.send(message);
+
+                    // Desconectar del broker MQTT
+                    client.disconnect();
+                }
+            });
+        }
     </script>
 </body>
 </html>
