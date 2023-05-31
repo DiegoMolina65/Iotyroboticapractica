@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Control de LED</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <h1>Control de LED</h1>
@@ -12,17 +14,15 @@
 
     <script>
         function encenderLed() {
-            fetch('/encender_led', { method: 'POST' })
-                .then(response => response.text())
-                .then(data => console.log(data))
-                .catch(error => console.error(error));
+            $.post("http://localhost:5000/encender_led", function(data) {
+                console.log(data);
+            });
         }
 
         function apagarLed() {
-            fetch('/apagar_led', { method: 'POST' })
-                .then(response => response.text())
-                .then(data => console.log(data))
-                .catch(error => console.error(error));
+            $.post("http://localhost:5000/apagar_led", function(data) {
+                console.log(data);
+            });
         }
     </script>
 </body>
