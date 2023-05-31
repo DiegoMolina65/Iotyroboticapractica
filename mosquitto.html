@@ -14,7 +14,7 @@
         const brokerPort = 9001; // Puerto predeterminado para MQTT sin encriptación
         const clientId = "mqtt-client-" + Math.random().toString(16).substr(2, 8); // Identificador de cliente único
 
-        const username = "diegomolna";
+        const username = "diegomolina";
         const password = "diegomolina";
 
         const mqttClient = new Paho.MQTT.Client(brokerHost, brokerPort, clientId);
@@ -36,19 +36,16 @@
             console.log("Conexión perdida a Mosquitto: " + response.errorMessage);
         };
 
-        // Función de recepción de mensaje
-        const onMessageArrived = message => {
-            console.log("Mensaje recibido: " + message.payloadString);
-        };
-
         // Configurar los controladores de eventos
         mqttClient.onConnectionLost = onConnectionLost;
-        mqttClient.onMessageArrived = onMessageArrived;
 
-        // Conectar al broker MQTT
+        // Intentar conectar al broker MQTT
         mqttClient.connect({
             onSuccess: onConnect,
-            useSSL: false // Cambiar a true si el servidor MQTT utiliza SSL/TLS
+            useSSL: false, // Cambiar a true si el servidor MQTT utiliza SSL/TLS
+            onFailure: (response) => {
+                console.log("Error al conectar a Mosquitto: " + response.errorMessage);
+            }
         });
     </script>
 </body>
