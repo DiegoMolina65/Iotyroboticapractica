@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>Control de LED</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/paho-mqtt.js"></script>
 </head>
 <body>
     <h1>Control de LED</h1>
@@ -12,44 +11,32 @@
     <button onclick="apagarLed()">Apagar LED</button>
 
     <script>
-        // Configuración del cliente MQTT
-        var broker_host = "104.154.170.98";
-        var broker_port = 1883;
-        var client = new Paho.MQTT.Client(broker_host, broker_port, "clientId");
-
-        // Configuración de las credenciales de autenticación
-        client.username = "diegomolina";
-        client.password = "diegomolina";
-
-        // Función para manejar la conexión establecida con el broker MQTT
-        function onConnect() {
-            console.log("Conectado al broker MQTT");
-        }
-
-        // Configuración del manejador de eventos de conexión
-        client.onConnectionLost = function(responseObject) {
-            if (responseObject.errorCode !== 0) {
-                console.log("Conexión perdida: " + responseObject.errorMessage);
-            }
-        }
-
-        // Conectar al broker MQTT
-        client.connect({
-            onSuccess: onConnect
-        });
-
         function encenderLed() {
-            // Publicar mensaje para encender el LED
-            var message = new Paho.MQTT.Message("Encender LED");
-            message.destinationName = "led_topic";
-            client.send(message);
+            enviarEstado('encendido');
         }
 
         function apagarLed() {
-            // Publicar mensaje para apagar el LED
-            var message = new Paho.MQTT.Message("Apagar LED");
-            message.destinationName = "led_topic";
-            client.send(message);
+            enviarEstado('apagado');
+        }
+
+        function enviarEstado(estado) {
+            fetch('http://localhost:5000/led', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ estado: estado })
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Estado enviado: ' + estado);
+                } else {
+                    console.error('Error al enviar el estado');
+                }
+            })
+            .catch(error => {
+                console.error('Error en la solicitud:', error);
+            });
         }
     </script>
 </body>
