@@ -1,31 +1,59 @@
-from flask import Flask, request
+import time
+import random
+import paho.mqtt.client as mqtt
 
-app = Flask(__name__)
+# Configuración del cliente MQTT
+broker_host = "104.154.170.98"
+broker_port = 1883
+username = "diegomolina"
+password = "diegomolina"
+led_topic = "led"
 
-# Estado inicial del LED
-led_encendido = False
+# Crear instancia del cliente MQTT
+client = mqtt.Client()
 
-# Ruta para encender el LED
-@app.route('/encender_led', methods=['POST'])
-def encender_led():
-    global led_encendido
-    if not led_encendido:
-        led_encendido = True
-        print("LED encendido")
-        return 'LED encendido'
+# Configurar las credenciales de autenticación
+client.username_pw_set(username, password)
+
+# Función de conexión
+def on_connect(client, userdata, flags, rc):
+    if rc == 0:
+        print("Conexión exitosa al broker MQTT")
     else:
-        return 'LED ya está encendido'
+        print("Error al conectar al broker MQTT, código de resultado: " + str(rc))
 
-# Ruta para apagar el LED
-@app.route('/apagar_led', methods=['POST'])
-def apagar_led():
-    global led_encendido
-    if led_encendido:
-        led_encendido = False
-        print("LED apagado")
-        return 'LED apagado'
-    else:
-        return 'LED ya está apagado'
+# Función de publicación
+def publish_message():
+    # Generar un valor aleatorio para el estado del LED
+    led_state = random.choice(["ON", "OFF"])
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    # Publicar el estado del LED en el tópico correspondiente
+    client.publish(led_topic, led_state)
+    print("Mensaje publicado: " + led_state)
+
+# Función de suscripción
+def on_message(client, userdata, msg):
+    if msg.topic == led_topic:
+        print("Mensaje recibido en el tópico " + msg.topic + ": " + str(msg.payload.decode()))
+
+# Configurar los controladores de eventos
+client.on_connect = on_connect
+client.on_message = on_message
+
+# Conectar al broker MQTT
+client.connect(broker_host, broker_port)
+
+# Iniciar el bucle de eventos
+client.loop_start()
+
+# Publicar mensajes cada 5 segundos
+try:
+    while True:
+        publish_message()
+        time.sleep(5)
+except KeyboardInterrupt:
+    pass
+
+# Detener el cliente MQTT
+client.loop_stop()
+client.disconnect()
